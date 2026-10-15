@@ -16,16 +16,19 @@ Kenney UI Pack 2.0 was evaluated and rejected for v1 (light-grey cartoon chrome
 does not map to the noir palette). Panels/buttons/inputs are `StyleBoxFlat` per
 `docs/art-bible.md` §3–§4. Do not add 9-slice PNGs without an art-bible amendment.
 
-## Portraits — 512×512 PNG, single consistent hand (commission)
+## Portraits — 512×512 PNG, single consistent hand (SHIPPED)
+
+Portrait Pack by Calciumtrice (CC BY 3.0, see LICENSES.md). Landed 2026-10-15.
 
 | File | Shows / screen |
 |------|---------------|
-| `game/assets/portraits/vivienne_hart_512.png` | Vivienne Hart, 38, lounge singer, smoky glamour / Dossiers, interrogation |
-| `game/assets/portraits/edwin_marsh_512.png` | Edwin Marsh, 51, stern railway partner / Dossiers, interrogation |
-| `game/assets/portraits/tommy_beck_512.png` | Tommy Beck, 24, nervous young porter / Dossiers, interrogation |
+| `game/assets/portraits/edwin_marsh_512.png` | Mustached railway man (Marsh) / Board, statements |
+| `game/assets/portraits/tommy_beck_512.png` | Young long-haired porter (Tommy) / Board, statements |
+| `game/assets/portraits/vivienne_hart_512.png` | Silver-blonde singer (Vivienne) / Board, statements |
+| `game/assets/portraits/ada_kowalski_512.png` | Young brunette captain (Kowalski) / Menu, case file |
 
-Victim needs no portrait (seen only as coroner's-slip text). Until these land,
-dossier cards show a palette-correct monogram tile with the name.
+Victim needs no portrait (seen only as coroner's-slip text). Evidence art
+below still uses placeholder tiles by design.
 
 ## Backdrops — 1920×1080, one painterly noir set (commission)
 

@@ -1,0 +1,7 @@
+Portrait Pack by Calciumtrice (https://opengameart.org/content/portrait-pack),
+licensed CC BY 3.0 (https://creativecommons.org/licenses/by/3.0/).
+Casting: fella 1 -> edwin_marsh_512.png, fella 2 -> tommy_beck_512.png,
+lady 2 -> vivienne_hart_512.png, lady 1 -> ada_kowalski_512.png
+(all resized to 512x512 from the no-background versions).
+Credit "Portrait Pack by Calciumtrice" wherever portrait credit is shown.
+Downloaded 2026-10-15.

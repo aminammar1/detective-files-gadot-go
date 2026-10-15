@@ -28,6 +28,9 @@ func _ready() -> void:
 	left.add_child(_header)
 	_sub = DFUI.small("…")
 	left.add_child(_sub)
+	left.add_child(BoardUI.photo("Capt. Ada Kowalski",
+		"Your captain · Graywater Police", 220.0, 220.0,
+		"portraits/ada_kowalski_512.png"))
 	_status_box = DFUI.vbox(8)
 	left.add_child(_status_box)
 

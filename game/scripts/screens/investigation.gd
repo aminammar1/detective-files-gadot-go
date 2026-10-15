@@ -189,6 +189,11 @@ func _build_case() -> void:
 		"red string = a liar caught", 380.0)
 	BoardUI.place(_canvas, legend, Vector2(2, 0), Vector2(720, 200), 7)
 	_cards["legend"] = legend
+	var capt := BoardUI.photo("Capt. Ada Kowalski",
+		"Your captain · Graywater Police · wrote the briefing", 220.0, 140.0,
+		"portraits/ada_kowalski_512.png")
+	BoardUI.place(_canvas, capt, Vector2(2, 1), Vector2(720, 200), 9)
+	_cards["captain"] = capt
 
 
 # --- EVIDENCE tab: the board ---
@@ -197,7 +202,7 @@ func _build_evidence() -> void:
 	var sus: Array = Session.case_data.get("suspects", [])
 	for i in sus.size():
 		var s: Dictionary = sus[i]
-		var ph := BoardUI.photo(str(s["name"]), "%s · %s" % [str(s["name"]), str(s["role"])])
+		var ph := BoardUI.photo(str(s["name"]), "%s · %s" % [str(s["name"]), str(s["role"])], 220.0, 140.0, str(s.get("asset", "")))
 		ph.custom_minimum_size = Vector2(240, 0)
 		BoardUI.place(_canvas, ph, Vector2(i, 0), Vector2(340, 200), i + 1)
 		_cards["sus:" + str(s["id"])] = ph
@@ -213,7 +218,7 @@ func _build_evidence() -> void:
 		var e: Dictionary = ev[i]
 		var col := i % 3
 		var row := 1 + i / 3
-		var ph2 := BoardUI.photo(str(e["name"]), "%s — %s" % [str(e["name"]), str(e.get("proves", ""))])
+		var ph2 := BoardUI.photo(str(e["name"]), "%s — %s" % [str(e["name"]), str(e.get("proves", ""))], 220.0, 140.0, str(e.get("asset", "")))
 		BoardUI.place(_canvas, ph2, Vector2(col, row), Vector2(340, 300), 20 + i)
 		_cards["ev:" + str(e["id"])] = ph2
 	var tests := _testimonies()
@@ -246,7 +251,7 @@ func _build_statements() -> void:
 	var s2 := _suspect(_suspect_id)
 	if s2.is_empty():
 		return
-	_cards["sus:" + _suspect_id] = BoardUI.photo(str(s2["name"]), str(s2["role"]))
+	_cards["sus:" + _suspect_id] = BoardUI.photo(str(s2["name"]), str(s2["role"]), 220.0, 140.0, str(s2.get("asset", "")))
 	_cards["sus:" + _suspect_id].custom_minimum_size = Vector2(300, 0)
 	var head := BoardUI.note("NoteCream", "%s — dossier" % str(s2["name"]),
 		"%s\n\nSTATES: “%s”" % [str(s2["dossier"]), str(s2["alibi"])], "", 560.0)
@@ -372,7 +377,7 @@ func _build_map() -> void:
 	var locs: Array = Session.case_data.get("locations", [])
 	for i in locs.size():
 		var l: Dictionary = locs[i]
-		var ph := BoardUI.photo(str(l["name"]), str(l["description"]), 260.0, 150.0)
+		var ph := BoardUI.photo(str(l["name"]), str(l["description"]), 260.0, 150.0, str(l.get("asset", "")))
 		BoardUI.place(_canvas, ph, Vector2(0, i), Vector2(480, 430), 140 + i)
 		_cards["loc:" + str(l["id"])] = ph
 		var s := BoardUI.paper_button("Search " + str(l["name"]))

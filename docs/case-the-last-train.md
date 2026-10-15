@@ -75,7 +75,7 @@ orchard in a freight-rate suit — but she never touched him.
 Breaks on: the observation-deck matchbook (places her off the dining car) →
 she admits the deck and, pressed, gives up what she saw: Marsh at Car 3 at 3:30.
 
-### Tommy Beck, 24 — sleeping-car porter. WITNESS / petty thief.
+### Tommy Beck, 29 — sleeping-car porter. WITNESS / petty thief.
 Voice: run-on nervous sentences, "sir" every other word, apologizes to furniture.
 Alibi (stated): "Polishing brass in Car 2 at four, sir, then coffee rounds."
 Truth: mostly true — but at 6:10 he stole one bond from the scene and lied about

@@ -110,23 +110,33 @@ static func folder(title: String, lines: Array) -> PanelContainer:
 
 
 static func photo(caption: String, sub: String, w: float = 220.0,
-		h: float = 140.0) -> PanelContainer:
-	# White frame + dark placeholder tile (NEEDED.md) + ink caption.
+		h: float = 140.0, art: String = "") -> PanelContainer:
+	# White frame + portrait when the file exists, else the dark placeholder
+	# tile (NEEDED.md) + ink caption. art is relative to game/assets/.
 	var p := PanelContainer.new()
 	panel_as(p, "PhotoFrame")
 	var v := DFUI.vbox(6)
-	var tile := PanelContainer.new()
-	tile.custom_minimum_size = Vector2(w, h)
-	var l := Label.new()
-	l.text = caption
-	l.add_theme_font_override("font", DFUI.display_font())
-	l.add_theme_font_size_override("font_size", 16)
-	l.add_theme_color_override("font_color", ArtPaths.GOLD)
-	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	tile.add_child(l)
-	v.add_child(tile)
+	var art_path := ("res://assets/" + art) if art != "" else ""
+	if art_path != "" and ResourceLoader.exists(art_path):
+		var img := TextureRect.new()
+		img.texture = load(art_path)
+		img.custom_minimum_size = Vector2(w, h)
+		img.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		img.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		v.add_child(img)
+	else:
+		var tile := PanelContainer.new()
+		tile.custom_minimum_size = Vector2(w, h)
+		var l := Label.new()
+		l.text = caption
+		l.add_theme_font_override("font", DFUI.display_font())
+		l.add_theme_font_size_override("font_size", 16)
+		l.add_theme_color_override("font_color", ArtPaths.GOLD)
+		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		tile.add_child(l)
+		v.add_child(tile)
 	var cap := Label.new()
 	cap.text = sub
 	ink(cap, "InkSmall")
