@@ -1,0 +1,1 @@
+Special Elite: https://github.com/google/fonts/tree/main/apache/specialelite (Apache-2.0). IBM Plex Sans variable: https://github.com/google/fonts/tree/main/ofl/ibmplexsans (OFL 1.1). Downloaded 2026-10-15.

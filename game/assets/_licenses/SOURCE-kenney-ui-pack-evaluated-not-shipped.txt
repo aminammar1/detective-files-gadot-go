@@ -1,0 +1,1 @@
+Kenney UI Pack 2.0 evaluated (https://kenney.nl/assets/ui-pack, CC0, downloaded 2026-10-15) but NOT shipped: light-grey cartoon chrome does not map to the noir palette; v1 chrome is StyleBoxFlat per art-bible fallback (see docs/asset-picks.md).
