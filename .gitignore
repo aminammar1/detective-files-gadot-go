@@ -6,6 +6,7 @@ backend/.env
 
 # Local agent skills / tooling
 .agents/
+skills-lock.json
 
 # Editor / OS noise
 *.tmp
