@@ -30,6 +30,31 @@ Portrait Pack by Calciumtrice (CC BY 3.0, see LICENSES.md). Landed 2026-10-15.
 Victim needs no portrait (seen only as coroner's-slip text). Evidence art
 below still uses placeholder tiles by design.
 
+## The Tunis Ledger slots (case 2 — placeholders by design)
+
+Same one-hand rule will apply when these are commissioned; until then the
+board shows monogram tiles (suspects) and dark tiles (places, exhibits),
+exactly like v1 did before its portraits landed.
+
+| File | Shows |
+|------|-------|
+| `game/assets/portraits/marco_silvestri_512.png` | Italian cargo clerk, 45, jacket buttoned |
+| `game/assets/portraits/yasmine_benammar_512.png` | Bar singer, 34, Corail Brûlé |
+| `game/assets/portraits/bilal_haddad_512.png` | Night watchman, 28, cap straight |
+| `game/assets/backgrounds/hotel_office_1920.png` | Aubert's office, razored ledger |
+| `game/assets/backgrounds/hotel_bar_1920.png` | Majestic bar after closing |
+| `game/assets/backgrounds/marina_quay_1920.png` | Dawn quay, harbormaster's hut |
+| `game/assets/backgrounds/cinema_etoile_1920.png` | Cinéma after the late show |
+| `game/assets/backgrounds/service_stair_1920.png` | Service stair, loose step |
+| `game/assets/evidence/anisette_800.png` | Cloudy anisette glass |
+| `game/assets/evidence/doctor_slip_800.png` | Amended doctor's slip |
+| `game/assets/evidence/ledger_800.png` | Razored harbor ledger |
+| `game/assets/evidence/manifests_800.png` | Two forged bills of lading |
+| `game/assets/evidence/dispensary_800.png` | Bar dispensary book |
+| `game/assets/evidence/stub_800.png` | Torn cinema stub, row C |
+| `game/assets/evidence/banknote_800.png` | Thousand-franc safe-run note |
+| `game/assets/evidence/wax_key_800.png` | Sealing-wax key impression |
+
 ## Backdrops — 1920×1080, one painterly noir set (commission)
 
 | File | Shows / screen |

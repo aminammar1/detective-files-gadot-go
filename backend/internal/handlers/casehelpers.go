@@ -21,6 +21,23 @@ func (a *App) requireCase(c *gin.Context) *models.CaseFile {
 	return cf
 }
 
+// requireUnlocked rejects sealed follow-up cases: a case with requires_case
+// stays sealed until the caller has closed the previous file (any verdict).
+func (a *App) requireUnlocked(c *gin.Context, cf *models.CaseFile) bool {
+	if cf.RequiresCase == "" {
+		return true
+	}
+	if _, err := a.Repo.FindResult(c.Request.Context(), middleware.UserID(c), cf.RequiresCase); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			middleware.Error(c, http.StatusConflict, "case_locked", "That file is sealed. Close the previous case first.")
+			return false
+		}
+		middleware.Error(c, http.StatusInternalServerError, "internal", "The precinct is having trouble. Try again.")
+		return false
+	}
+	return true
+}
+
 // requireInvestigation loads the caller's investigation or writes 404/500.
 func (a *App) requireInvestigation(c *gin.Context, caseID string) *repository.Investigation {
 	iv, err := a.Repo.FindInvestigation(c.Request.Context(), middleware.UserID(c), caseID)

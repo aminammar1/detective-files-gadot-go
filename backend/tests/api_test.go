@@ -146,8 +146,13 @@ func TestPlayerDataIsolation(t *testing.T) {
 	require.Equal(t, 200, status)
 	var list []map[string]any
 	require.NoError(t, jsonUnmarshal(raw, &list))
-	require.Len(t, list, 1)
-	require.Equal(t, "unlocked", list[0]["status"])
+	require.Len(t, list, 2)
+	byID := map[string]map[string]any{}
+	for _, e := range list {
+		byID[e["id"].(string)] = e
+	}
+	require.Equal(t, "unlocked", byID["the_last_train"]["status"])
+	require.Equal(t, "locked", byID["the_tunis_ledger"]["status"])
 
 	// A's state shows evidence; B has none anywhere.
 	status, raw = ta.do(t, "GET", "/api/v1/cases/"+caseID+"/state", tokA, nil)
@@ -513,8 +518,10 @@ func TestHealthReadyCasesAndStats(t *testing.T) {
 	require.Equal(t, 200, status)
 	var list []map[string]any
 	require.NoError(t, jsonUnmarshal(raw, &list))
-	require.Len(t, list, 1)
+	require.Len(t, list, 2)
 	require.Equal(t, "the_last_train", list[0]["id"])
+	require.Equal(t, "the_tunis_ledger", list[1]["id"])
+	require.Equal(t, "locked", list[1]["status"])
 
 	status, raw = ta.do(t, "GET", "/api/v1/cases/"+caseID, tok, nil)
 	require.Equal(t, 200, status)
@@ -550,4 +557,70 @@ func TestHealthReadyCasesAndStats(t *testing.T) {
 		require.Contains(t, stats, k)
 	}
 	require.Equal(t, float64(1), stats["cases_started"])
+}
+
+func TestCaseLockedFlow(t *testing.T) {
+	ta := setupApp(t)
+	_, tok := registerUser(t, ta, "lockpick")
+
+	// Tunis file is sealed before the train is closed.
+	status, raw := ta.do(t, "GET", "/api/v1/cases", tok, nil)
+	require.Equal(t, 200, status)
+	var list []map[string]any
+	require.NoError(t, jsonUnmarshal(raw, &list))
+	byID := map[string]map[string]any{}
+	for _, e := range list {
+		byID[e["id"].(string)] = e
+	}
+	require.Equal(t, "locked", byID["the_tunis_ledger"]["status"])
+	status, raw = ta.do(t, "POST", "/api/v1/cases/the_tunis_ledger/start", tok, nil)
+	require.Equal(t, 409, status, string(raw))
+	require.Equal(t, "case_locked", decode(t, raw)["error"].(map[string]any)["code"])
+	status, _ = ta.do(t, "GET", "/api/v1/cases/the_tunis_ledger", tok, nil)
+	require.Equal(t, 409, status)
+
+	// Close the train (wrong verdict still closes the file).
+	status, _ = ta.do(t, "POST", "/api/v1/cases/"+caseID+"/start", tok, nil)
+	require.Equal(t, 201, status)
+	status, raw = ta.do(t, "POST", "/api/v1/cases/"+caseID+"/accusations", tok,
+		map[string]any{"suspect_id": "tommy_beck"})
+	require.Equal(t, 201, status, string(raw))
+
+	// Seal lifts: start, full solve, guilty + achievement.
+	status, raw = ta.do(t, "GET", "/api/v1/cases", tok, nil)
+	require.Equal(t, 200, status)
+	require.NoError(t, jsonUnmarshal(raw, &list))
+	byID = map[string]map[string]any{}
+	for _, e := range list {
+		byID[e["id"].(string)] = e
+	}
+	require.Equal(t, "unlocked", byID["the_tunis_ledger"]["status"])
+	status, _ = ta.do(t, "POST", "/api/v1/cases/the_tunis_ledger/start", tok, nil)
+	require.Equal(t, 201, status)
+	for _, loc := range []string{"hotel_office", "hotel_bar", "marina_quay", "cinema_etoile", "service_stair"} {
+		status, _ = ta.do(t, "POST", "/api/v1/cases/the_tunis_ledger/actions", tok,
+			map[string]any{"action": "search", "location_id": loc})
+		require.Equal(t, 200, status)
+	}
+	for _, p := range [][2]string{{"bilal_haddad", "banknote"}, {"yasmine_benammar", "stub"}} {
+		status, _ = ta.do(t, "POST", "/api/v1/cases/the_tunis_ledger/present-evidence", tok,
+			map[string]any{"suspect_id": p[0], "evidence_id": p[1]})
+		require.Equal(t, 200, status)
+	}
+	status, raw = ta.do(t, "POST", "/api/v1/cases/the_tunis_ledger/accusations", tok,
+		map[string]any{"suspect_id": "marco_silvestri"})
+	require.Equal(t, 201, status, string(raw))
+	m := decode(t, raw)
+	require.Equal(t, "guilty", m["result"])
+	status, raw = ta.do(t, "GET", "/api/v1/player/achievements", tok, nil)
+	require.Equal(t, 200, status)
+	var achs []map[string]any
+	require.NoError(t, jsonUnmarshal(raw, &achs))
+	found := false
+	for _, a := range achs {
+		if a["id"] == "solved_tunis_ledger" && a["unlocked_at"] != nil {
+			found = true
+		}
+	}
+	require.True(t, found, "solved_tunis_ledger should be unlocked")
 }

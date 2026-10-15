@@ -78,4 +78,26 @@ assert set(unlocked) == {"started_first_case", "found_first_evidence", "broke_al
 s, lb = call("GET", "/leaderboard", token=log2["token"])
 assert any(e["username"] == S for e in lb)
 print("16 relogin: completed/correct persisted, 5/5 achievements, leaderboard ok")
+s, reg3 = call("POST", "/auth/register", {"email": "e2e_tunis@example.com", "username": "e2e_tunis", "password": "trenchcoat99"})
+tC = reg3["token"]
+s, cl = call("GET", "/cases", token=tC)
+rows = {c["id"]: c for c in cl}
+assert rows["the_tunis_ledger"]["status"] == "locked", rows["the_tunis_ledger"]
+s, lk = call("POST", "/cases/the_tunis_ledger/start", token=tC)
+assert s == 409 and lk["error"]["code"] == "case_locked", (s, lk)
+print("17 tunis sealed: locked in list, start -> 409 case_locked ok")
+s, _ = call("POST", "/cases/the_last_train/start", token=tC)
+s, _ = call("POST", "/cases/the_last_train/accusations", {"suspect_id": "tommy_beck"}, tC)
+s, _ = call("POST", "/cases/the_tunis_ledger/start", token=tC)
+assert s == 201, s
+for loc in ["hotel_office", "hotel_bar", "marina_quay", "cinema_etoile", "service_stair"]:
+    s, r = call("POST", "/cases/the_tunis_ledger/actions", {"action": "search", "location_id": loc}, tC)
+    assert s == 200 and len(r["found"]) > 0, (loc, s, r)
+s, _ = call("POST", "/cases/the_tunis_ledger/present-evidence", {"suspect_id": "bilal_haddad", "evidence_id": "banknote"}, tC)
+s, _ = call("POST", "/cases/the_tunis_ledger/present-evidence", {"suspect_id": "yasmine_benammar", "evidence_id": "stub"}, tC)
+s, acc3 = call("POST", "/cases/the_tunis_ledger/accusations", {"suspect_id": "marco_silvestri"}, tC)
+assert s == 201 and acc3["result"] == "guilty" and acc3["score"] == 1600, (s, acc3)
+s, ach3 = call("GET", "/player/achievements", token=tC)
+assert any(a["id"] == "solved_tunis_ledger" and a["unlocked_at"] for a in ach3)
+print("18 tunis solved after unlock: guilty 1600, Harbor Light achievement ok")
 print("E2E PASS")

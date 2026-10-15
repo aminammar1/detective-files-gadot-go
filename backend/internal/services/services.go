@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
+	"strings"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -208,12 +209,18 @@ func Accuse(ctx context.Context, pool *pgxpool.Pool, repo *repository.Repo, c *m
 		return nil, false, err
 	}
 	if correct && proven {
+		// Per-case solved achievement: "the_last_train" -> "solved_last_train",
+		// "the_tunis_ledger" -> "solved_tunis_ledger". Awarded only if the id
+		// is seeded — the FK-safe conditional keeps future cases from breaking.
+		solvedID := "solved_" + strings.TrimPrefix(caseID, "the_")
 		if _, err := tx.Exec(ctx,
-			`INSERT INTO player_achievements(user_id,achievement_id) VALUES($1,'solved_last_train') ON CONFLICT DO NOTHING`,
-			userID); err != nil {
+			`INSERT INTO player_achievements(user_id,achievement_id)
+			 SELECT $1,$2 WHERE EXISTS (SELECT 1 FROM achievements WHERE id=$2)
+			 ON CONFLICT DO NOTHING`,
+			userID, solvedID); err != nil {
 			return nil, false, err
 		}
-		if len(discSet) == len(c.Evidence) && len(unlocked) == len(c.Testimonies) {
+		if caseID == "the_last_train" && len(discSet) == len(c.Evidence) && len(unlocked) == len(c.Testimonies) {
 			if _, err := tx.Exec(ctx,
 				`INSERT INTO player_achievements(user_id,achievement_id) VALUES($1,'perfect_deduction') ON CONFLICT DO NOTHING`,
 				userID); err != nil {

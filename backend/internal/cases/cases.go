@@ -49,6 +49,22 @@ func Load() (*Registry, error) {
 	if len(r.cases) == 0 {
 		return nil, fmt.Errorf("no cases embedded")
 	}
+	// Lock chains: requires_case must name another embedded case, no cycles.
+	for id, c := range r.cases {
+		seen := map[string]bool{id: true}
+		next := c.RequiresCase
+		for next != "" {
+			target, ok := r.cases[next]
+			if !ok {
+				return nil, fmt.Errorf("case %q: requires_case references unknown %q", id, next)
+			}
+			if seen[next] {
+				return nil, fmt.Errorf("case %q: requires_case cycle at %q", id, next)
+			}
+			seen[next] = true
+			next = target.RequiresCase
+		}
+	}
 	return r, nil
 }
 

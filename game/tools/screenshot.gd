@@ -111,6 +111,24 @@ func _run_flow(flow: String) -> void:
 	var state := await ApiClient.api("GET", "/cases/the_last_train/state")
 	if state.get("ok", false):
 		Session.inv_state = state["data"]
+	if flow == "tunis":
+		await ApiClient.api("POST", "/cases/the_last_train/start")
+		await ApiClient.api("POST", "/cases/the_last_train/accusations", {"suspect_id": "tommy_beck"})
+		var detail2 := await ApiClient.api("GET", "/cases/the_tunis_ledger")
+		if detail2.get("ok", false):
+			Session.case_id = "the_tunis_ledger"
+			Session.case_data = detail2["data"]
+			await ApiClient.api("POST", "/cases/the_tunis_ledger/start")
+			for loc in Session.case_data.get("locations", []):
+				await ApiClient.api("POST", "/cases/the_tunis_ledger/actions",
+					{"action": "search", "location_id": str(loc["id"])})
+			await ApiClient.api("POST", "/cases/the_tunis_ledger/present-evidence",
+				{"suspect_id": "bilal_haddad", "evidence_id": "banknote"})
+			await ApiClient.api("POST", "/cases/the_tunis_ledger/present-evidence",
+				{"suspect_id": "yasmine_benammar", "evidence_id": "stub"})
+			var st3 := await ApiClient.api("GET", "/cases/the_tunis_ledger/state")
+			if st3.get("ok", false):
+				Session.inv_state = st3["data"]
 	if flow == "verdict":
 		for pair in [["edwin_marsh", "timetable"], ["edwin_marsh", "medicine_log"],
 				["edwin_marsh", "key_registry"]]:

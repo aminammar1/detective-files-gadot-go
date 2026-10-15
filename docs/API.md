@@ -95,10 +95,15 @@ All achievement defs; locked rows show `"unlocked_at": null`.
 ## Cases
 
 ### GET /cases (auth) → 200
-v1 ships one case; status is never `locked`.
+Cases after the first carry `"requires_case"` and report `"status": "locked"`
+until the required file is closed (any verdict). Sealed files hide their
+content: detail/start return `409 case_locked`.
 ```json
 [{"id": "the_last_train", "title": "The Last Train", "difficulty": "introductory",
-  "status": "unlocked", "started_at": null, "completed_at": null, "correct": null}]
+  "status": "unlocked", "started_at": null, "completed_at": null, "correct": null},
+ {"id": "the_tunis_ledger", "title": "The Tunis Ledger", "difficulty": "standard",
+  "status": "locked", "requires_case": "the_last_train", "started_at": null,
+  "completed_at": null, "correct": null}]
 ```
 After judging: `"status": "completed"`, with `completed_at` and `correct`.
 
@@ -206,5 +211,8 @@ Postgres; Redis failure degrades to a miss, never an error.
 ## Error codes
 
 `validation_error` (422), `invalid_credentials` (401), `unauthorized` (401),
-`not_found` (404), `conflict` (409), `case_closed` (409), `unproven` (422),
-`rate_limited` (429), `internal` (500).
+`not_found` (404), `conflict` (409), `case_closed` (409), `case_locked` (409),
+`unproven` (422), `rate_limited` (429), `internal` (500).
+
+Solved achievements are per case (`solved_last_train`, `solved_tunis_ledger`);
+`perfect_deduction` is awarded only for a flawless Last Train solve.

@@ -7,6 +7,7 @@ type CaseFile struct {
 	ID               string          `json:"id"`
 	Title            string          `json:"title"`
 	Difficulty       string          `json:"difficulty"`
+	RequiresCase     string          `json:"requires_case,omitempty"`
 	Briefing         string          `json:"briefing"`
 	AuditLetter      string          `json:"audit_letter"`
 	Locations        []Location      `json:"locations"`

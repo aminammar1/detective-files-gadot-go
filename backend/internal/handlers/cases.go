@@ -23,6 +23,10 @@ func (a *App) ListCases(c *gin.Context) {
 			"id": id, "title": cf.Title, "difficulty": cf.Difficulty,
 			"status": "unlocked", "started_at": nil, "completed_at": nil, "correct": nil,
 		}
+		if cf.RequiresCase != "" {
+			entry["status"] = "locked"
+			entry["requires_case"] = cf.RequiresCase
+		}
 		if iv, err := a.Repo.FindInvestigation(ctx, uid, id); err == nil {
 			entry["started_at"] = iv.StartedAt.UTC().Format("2006-01-02T15:04:05Z07:00")
 		} else if !errors.Is(err, pgx.ErrNoRows) {
@@ -34,6 +38,13 @@ func (a *App) ListCases(c *gin.Context) {
 			entry["completed_at"] = res.CompletedAt.UTC().Format("2006-01-02T15:04:05Z07:00")
 			entry["correct"] = res.Correct
 		} else if !errors.Is(err, pgx.ErrNoRows) {
+			middleware.Error(c, 500, "internal", "The precinct is having trouble. Try again.")
+			return
+		} else if cf.RequiresCase == "" {
+			entry["status"] = "unlocked"
+		} else if _, rerr := a.Repo.FindResult(ctx, uid, cf.RequiresCase); rerr == nil {
+			entry["status"] = "unlocked"
+		} else if !errors.Is(rerr, pgx.ErrNoRows) {
 			middleware.Error(c, 500, "internal", "The precinct is having trouble. Try again.")
 			return
 		}
@@ -48,6 +59,9 @@ func (a *App) GetCase(c *gin.Context) {
 	if cf == nil {
 		return
 	}
+	if !a.requireUnlocked(c, cf) {
+		return
+	}
 	raw, err := services.CachedDetailJSON(c.Request.Context(), a.Cache, a.Cases, cf.ID)
 	if err != nil {
 		middleware.Error(c, 500, "internal", "The precinct is having trouble. Try again.")
@@ -60,6 +74,9 @@ func (a *App) GetCase(c *gin.Context) {
 func (a *App) StartCase(c *gin.Context) {
 	cf := a.requireCase(c)
 	if cf == nil {
+		return
+	}
+	if !a.requireUnlocked(c, cf) {
 		return
 	}
 	ctx := c.Request.Context()

@@ -2,8 +2,9 @@
 
 ## What this is
 Single-player 2D noir detective game. Native Godot 4.7 client (GDScript),
-server-authoritative Go backend. Case v1: "The Last Train" (fictional 1947
-railway murder, 3 suspects / 4 locations / 8 exhibits / 2 testimonies).
+server-authoritative Go backend. Cases (sealed in order): "The Last Train"
+(1947 railway murder) then "The Tunis Ledger" (1947 Tunis hotel murder).
+All persons fictional.
 
 ## Stack
 Backend: Go, **Gin** (`gin.New()`), pgxpool, go-redis, golang-migrate,

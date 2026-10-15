@@ -58,6 +58,7 @@ shots: ## All key screens at 1280x720 (startup, auth, menu, cases, desk, suspect
 	$(MAKE) shot SCENE=investigation SHOT=invest_720 FLOW=case
 	$(MAKE) shot SCENE=investigation SHOT=suspect_720 FLOW=board ARGS=--suspect=tommy_beck
 	$(MAKE) shot SCENE=investigation SHOT=clip_720 FLOW=board ARGS=--clip
+	$(MAKE) shot SCENE=investigation SHOT=tunis_720 FLOW=tunis
 	$(MAKE) shot SCENE=results SHOT=verdict_720 FLOW=verdict
 	$(MAKE) shot SCENE=profile SHOT=profile_720 FLOW=menu
 	$(MAKE) shot SCENE=settings SHOT=settings_720 FLOW=menu

@@ -69,9 +69,19 @@ func _case_card(c: Dictionary) -> PanelContainer:
 	h.add_child(v)
 	var started: bool = c.get("started_at") != null
 	var done: bool = c.get("completed_at") != null
-	var btn := BoardUI.paper_button("Review" if done else ("Resume" if started else "Open the file"))
+	var sealed: bool = str(c.get("status", "unlocked")) == "locked"
+	var btn := BoardUI.paper_button("Sealed" if sealed else ("Review" if done else ("Resume" if started else "Open the file")))
+	btn.disabled = sealed
+	if sealed:
+		btn.icon = ArtPaths.icon("lock", ArtPaths.DISABLED)
 	h.add_child(btn)
-	btn.pressed.connect(_on_open.bind(str(c.get("id", "")), done))
+	if not sealed:
+		btn.pressed.connect(_on_open.bind(str(c.get("id", "")), done))
+	if sealed:
+		var req := Label.new()
+		req.text = "Close The Last Train first."
+		BoardUI.ink(req, "InkSmall")
+		v.add_child(req)
 	card.add_child(h)
 	return card
 

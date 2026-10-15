@@ -18,7 +18,7 @@ godot --headless --path game --quit    # parse check (errors fail it)
 # Screenshots (needs API up; flows play the real backend):
 xvfb-run -a godot --rendering-driver opengl3 --resolution 1280x720 --path game \
   res://tools/screenshot.tscn -- --scene=res://scenes/auth.tscn --shot=auth_720
-# --flow=menu|case|board|verdict seeds a throwaway badge and plays that far.
+# --flow=menu|case|board|verdict|tunis seeds a throwaway badge and plays that far.
 # --view=<tab index> frames an investigation tab; --suspect=<id> picks a
 # suspect (STATEMENTS tab); --clip opens the Final Report clipboard.
 ```
