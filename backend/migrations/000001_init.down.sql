@@ -1,0 +1,9 @@
+DROP TABLE IF EXISTS player_achievements;
+DROP TABLE IF EXISTS achievements;
+DROP TABLE IF EXISTS case_results;
+DROP TABLE IF EXISTS investigation_actions;
+DROP TABLE IF EXISTS interrogation_events;
+DROP TABLE IF EXISTS discovered_evidence;
+DROP TABLE IF EXISTS investigations;
+DROP TABLE IF EXISTS player_profiles;
+DROP TABLE IF EXISTS users;
