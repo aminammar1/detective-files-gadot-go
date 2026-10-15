@@ -21,15 +21,18 @@ func _ready() -> void:
 
 	var cols := DFUI.hbox(24)
 	v.add_child(cols)
-	var left := DFUI.vbox(12)
+	# Compact mode for short viewports: smaller captain photo, tighter gaps.
+	var compact: bool = get_viewport_rect().size.y < 720.0
+	var left := DFUI.vbox(8 if compact else 12)
 	left.custom_minimum_size = Vector2(300, 0)
 	cols.add_child(left)
 	_header = DFUI.heading("…")
 	left.add_child(_header)
 	_sub = DFUI.small("…")
 	left.add_child(_sub)
+	var face := 150.0 if compact else 220.0
 	left.add_child(BoardUI.photo("Capt. Ada Kowalski",
-		"Your captain · Graywater Police", 220.0, 220.0,
+		"Your captain · Graywater Police", face, face,
 		"portraits/ada_kowalski_512.png"))
 	_status_box = DFUI.vbox(8)
 	left.add_child(_status_box)

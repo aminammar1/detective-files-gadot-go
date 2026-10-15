@@ -98,7 +98,12 @@ func _ready() -> void:
 	_clip.offset_top = -215.0
 	_clip.offset_bottom = 215.0
 	_clip_body = DFUI.vbox(10)
-	_clip.add_child(_clip_body)
+	var clip_scroll := ScrollContainer.new()
+	clip_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	clip_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	clip_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	clip_scroll.add_child(_clip_body)
+	_clip.add_child(clip_scroll)
 	add_child(_clip)
 	_boot()
 
@@ -429,7 +434,18 @@ func _toggle_clip() -> void:
 	Nav.play_sfx("ui_open")
 	_clip.visible = not _clip.visible
 	if _clip.visible:
+		_fit_clip()
 		_build_clip()
+
+
+func _fit_clip() -> void:
+	# Responsive: never wider than the viewport minus margins.
+	var vw: float = get_viewport_rect().size.x
+	var w := minf(368.0, vw - 48.0)
+	_clip.offset_left = -w - 24.0
+	_clip.offset_right = -24.0
+	_clip.offset_top = -230.0
+	_clip.offset_bottom = 230.0
 
 
 func _build_clip() -> void:
@@ -463,6 +479,9 @@ func _build_clip() -> void:
 	go.disabled = _accuse_pick == ""
 	_clip_body.add_child(go)
 	go.pressed.connect(_on_accuse)
+	var pin := BoardUI.paper_button("Pin it back")
+	_clip_body.add_child(pin)
+	pin.pressed.connect(_toggle_clip)
 
 
 func _on_accuse_pick(suspect_id: String) -> void:
